@@ -65,9 +65,9 @@ $dateValue = preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateValue) ? $dateValue : '';
   <script>
     window.APP_CONFIG = {
       apiUrl: 'api.php',
-      startDate: '<?php echo VACATION_START_DATE; ?>',
-      endDate: '<?php echo VACATION_END_DATE; ?>',
-      studentName: <?php echo json_encode(STUDENT_NAME, JSON_UNESCAPED_UNICODE); ?>
+      startDate: '<?php echo vacation_start_date(); ?>',
+      endDate: '<?php echo vacation_end_date(); ?>',
+      studentName: <?php echo json_encode(student_name(), JSON_UNESCAPED_UNICODE); ?>
     };
   </script>
   <script src="script.js"></script>

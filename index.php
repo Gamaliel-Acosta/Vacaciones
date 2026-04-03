@@ -8,7 +8,7 @@ require_once __DIR__ . '/config.php';
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><?php echo htmlspecialchars(APP_TITLE, ENT_QUOTES, 'UTF-8'); ?></title>
+  <title><?php echo htmlspecialchars(app_title(), ENT_QUOTES, 'UTF-8'); ?></title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body data-page="home">
@@ -18,7 +18,7 @@ require_once __DIR__ . '/config.php';
   <main class="page-shell">
     <section class="hero-card">
       <p class="eyebrow">Proyecto escolar de preparatoria</p>
-      <h1><?php echo htmlspecialchars(STUDENT_NAME, ENT_QUOTES, 'UTF-8'); ?></h1>
+      <h1><?php echo htmlspecialchars(student_name(), ENT_QUOTES, 'UTF-8'); ?></h1>
       <form id="homeDescriptionForm" class="home-description-form">
         <article id="homeDescriptionPreview" class="home-description-preview"></article>
         <textarea id="homeDescriptionInput" class="home-description-input" rows="4" maxlength="500" placeholder="Escribe aquí la descripción general de tu proyecto"></textarea>
@@ -43,9 +43,9 @@ require_once __DIR__ . '/config.php';
   <script>
     window.APP_CONFIG = {
       apiUrl: 'api.php',
-      startDate: '<?php echo VACATION_START_DATE; ?>',
-      endDate: '<?php echo VACATION_END_DATE; ?>',
-      studentName: <?php echo json_encode(STUDENT_NAME, JSON_UNESCAPED_UNICODE); ?>
+      startDate: '<?php echo vacation_start_date(); ?>',
+      endDate: '<?php echo vacation_end_date(); ?>',
+      studentName: <?php echo json_encode(student_name(), JSON_UNESCAPED_UNICODE); ?>
     };
   </script>
   <script src="script.js"></script>
