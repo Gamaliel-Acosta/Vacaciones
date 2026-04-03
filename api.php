@@ -25,17 +25,22 @@ function isWithinRange(string $value): bool
 
 function rowToEntry(array $row, bool $includeImage = false): array
 {
+    $imageData = $row['image_data'] ?? null;
+    if (is_resource($imageData)) {
+        $imageData = stream_get_contents($imageData);
+    }
+
     $entry = [
         'date' => $row['entry_date'],
         'title' => $row['title'] ?? '',
         'description' => $row['description'] ?? '',
         'updatedAt' => $row['updated_at'] ?? null,
-        'hasPhoto' => !empty($row['image_data']),
+        'hasPhoto' => !empty($imageData),
     ];
 
     if ($includeImage) {
         $mime = $row['image_mime'] ?? '';
-        $data = $row['image_data'] ?? null;
+        $data = $imageData;
         $entry['photoUrl'] = $data ? 'data:' . $mime . ';base64,' . base64_encode($data) : null;
     }
 
@@ -61,7 +66,7 @@ try {
         $description = trim((string)($_POST['description'] ?? ''));
 
         $pdo = getDb();
-        $statement = $pdo->prepare('INSERT INTO app_settings (id, home_description, updated_at) VALUES (1, :description, NOW()) ON DUPLICATE KEY UPDATE home_description = VALUES(home_description), updated_at = NOW()');
+        $statement = $pdo->prepare('INSERT INTO app_settings (id, home_description, updated_at) VALUES (1, :description, NOW()) ON CONFLICT (id) DO UPDATE SET home_description = EXCLUDED.home_description, updated_at = NOW()');
         $statement->execute([':description' => $description]);
 
         respond(true, ['message' => 'Descripción de la portada guardada correctamente.']);
@@ -126,12 +131,12 @@ try {
         $upsert = $pdo->prepare(
             'INSERT INTO day_entries (entry_date, title, description, image_data, image_mime, created_at, updated_at)
              VALUES (:date, :title, :description, :image_data, :image_mime, NOW(), NOW())
-             ON DUPLICATE KEY UPDATE
-                title = VALUES(title),
-                description = VALUES(description),
-                image_data = VALUES(image_data),
-                image_mime = VALUES(image_mime),
-                updated_at = NOW()'
+             ON CONFLICT (entry_date) DO UPDATE SET
+            title = EXCLUDED.title,
+            description = EXCLUDED.description,
+            image_data = EXCLUDED.image_data,
+            image_mime = EXCLUDED.image_mime,
+            updated_at = NOW()'
         );
 
         $upsert->bindValue(':date', $date);
