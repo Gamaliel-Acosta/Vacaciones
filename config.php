@@ -117,3 +117,8 @@ function db_pass(): string
 {
 	return env('DB_PASS', DB_PASS);
 }
+
+function database_url(): string
+{
+	return env('DATABASE_URL', '');
+}
